@@ -9,8 +9,7 @@ export async function createChat(data: {
   id?: string;
   title: string;
   userId: string;
-  organizationId?: string | null;
-  visibility?: "user" | "organization";
+  modelId: string;
 }) {
   const [chat] = await db
     .insert(s.chat)
@@ -18,6 +17,7 @@ export async function createChat(data: {
       id: data.id ?? randomUUID(),
       title: data.title,
       userId: data.userId,
+      modelId: data.modelId,
       createdAt: new Date(),
     })
     .returning();

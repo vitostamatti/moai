@@ -86,6 +86,9 @@ export const chat = pgTable("chat", {
   userId: text("user_id")
     .notNull()
     .references(() => user.id),
+  modelId: text("model_id")
+    .notNull()
+    .references(() => model.id),
 });
 
 export const message = pgTable("message", {

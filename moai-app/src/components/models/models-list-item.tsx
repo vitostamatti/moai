@@ -46,10 +46,8 @@ export type ModelSummary = {
   id: string;
   name: string;
   description: string | null;
-  version: number;
   createdAt: string | Date;
   updatedAt: string | Date;
-  tags: string[];
   ownerName: string | null;
   componentsCount: {
     sets: number;
@@ -208,30 +206,13 @@ export const ModelsListItem = ({ model }: { model: ModelSummary }) => {
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-1 text-muted-foreground">
                 <Clock className="h-3 w-3" />
-                <span>
-                  v{model.version} • {formatDistanceToNow(model.updatedAt)} ago
-                </span>
+                <span>{formatDistanceToNow(model.updatedAt)} ago</span>
               </div>
               <div className="flex items-center gap-1 text-muted-foreground">
                 <Users className="h-3 w-3" />
                 <span>{model.ownerName ?? ""}</span>
               </div>
             </div>
-
-            {model.tags?.length ? (
-              <div className="flex flex-wrap gap-2 pt-1">
-                {model.tags.slice(0, 4).map((t) => (
-                  <Badge key={t} variant="outline" className="text-xs">
-                    {t}
-                  </Badge>
-                ))}
-                {model.tags.length > 4 && (
-                  <Badge variant="outline" className="text-xs">
-                    +{model.tags.length - 4}
-                  </Badge>
-                )}
-              </div>
-            ) : null}
           </div>
         </CardContent>
       </Card>

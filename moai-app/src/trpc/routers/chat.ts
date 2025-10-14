@@ -5,6 +5,7 @@ import {
   listChatsForUser,
   getChatById,
   getMessagesByChatId,
+  listChatsForUserAndModel,
 } from "@/db/queries";
 import { TRPCError } from "@trpc/server";
 
@@ -14,7 +15,7 @@ export const chatRouter = router({
     .input(
       z.object({
         title: z.string().min(1),
-        visibility: z.enum(["user", "organization"]).optional(),
+        modelId: z.string().min(1),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -23,7 +24,7 @@ export const chatRouter = router({
       const chat = await createChat({
         title: input.title,
         userId: userId,
-        visibility: input.visibility,
+        modelId: input.modelId,
       });
 
       return chat;
@@ -56,36 +57,13 @@ export const chatRouter = router({
 
   // List chats for current user with metadata
   list: protectedProcedure
-    .input(z.object({ limit: z.number().min(1) }))
+    .input(z.object({ modelId: z.string(), limit: z.number().min(1) }))
     .query(async ({ ctx, input }) => {
       const { userId } = ctx;
 
-      // Get user's private chats
-      const chats = await listChatsForUser(userId);
+      const chats = await listChatsForUserAndModel(userId, input.modelId);
 
-      // Get last message for each chat for preview
-
-      const chatsWithPreview = await Promise.all(
-        chats.map(async (chat) => {
-          const messages = await getMessagesByChatId(chat.id);
-          const lastMessage = messages[messages.length - 1];
-
-          return {
-            ...chat,
-            lastMessage: lastMessage
-              ? {
-                  content:
-                    (lastMessage.parts as { text?: string }[])?.[0]?.text ||
-                    "No content",
-                  createdAt: lastMessage.createdAt,
-                }
-              : null,
-            messageCount: messages.length,
-          };
-        })
-      );
-
-      return chatsWithPreview
+      return chats
         .filter((chat) => chat.userId === userId)
         .slice(0, input.limit);
     }),
@@ -96,7 +74,6 @@ export const chatRouter = router({
       z.object({
         id: z.string(),
         title: z.string().min(1).optional(),
-        visibility: z.enum(["user", "organization"]).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {

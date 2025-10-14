@@ -259,6 +259,16 @@ export async function listChatsForUser(userId: string) {
     orderBy: (chat, { desc }) => [desc(chat.createdAt)],
   });
 }
+export async function listChatsForUserAndModel(
+  userId: string,
+  modelId: string
+) {
+  return await db.query.chat.findMany({
+    where: (chat, { and, eq }) =>
+      and(eq(chat.userId, userId), eq(chat.modelId, modelId)),
+    orderBy: (chat, { desc }) => [desc(chat.createdAt)],
+  });
+}
 
 export async function getMessagesByChatId(chatId: string) {
   if (!chatId) {

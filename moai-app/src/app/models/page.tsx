@@ -10,12 +10,12 @@ import { HydrateClient, trpc } from "@/trpc/server";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ModelsHeader } from "@/components/models/models-header";
-import { CreateModelDialog } from "@/components/models/create-model-dialog";
+import { CreateModelDialogProvider } from "@/components/models/create-model-dialog-provider";
 
 export default async function Page() {
   const { user } = await getSession();
   if (!user) {
-    redirect("/organization");
+    redirect("/");
   }
   // Always prefetch organization models; the router assumes org context.
   trpc.models.list.prefetch();
@@ -42,13 +42,13 @@ export default async function Page() {
         {/* Header */}
         <div className="container mx-auto px-4 py-8">
           <ModelsHeader />
-
-          <ErrorBoundary fallback={<ModelsListError />}>
-            <Suspense fallback={<ModelsListSkeleton />}>
-              <ModelsList />
-            </Suspense>
-          </ErrorBoundary>
-          <CreateModelDialog />
+          <CreateModelDialogProvider>
+            <ErrorBoundary fallback={<ModelsListError />}>
+              <Suspense fallback={<ModelsListSkeleton />}>
+                <ModelsList />
+              </Suspense>
+            </ErrorBoundary>
+          </CreateModelDialogProvider>
         </div>
       </div>
     </HydrateClient>

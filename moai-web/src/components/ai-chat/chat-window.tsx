@@ -41,8 +41,8 @@ import { CreateSetDefinitionSchema } from "@/lib/editor/set/set-schema";
 
 type ChatProps = {
   chatId: string;
-  chats: string[];
   initialMessages: ChatMessage[];
+  chats: string[];
   onCreate: () => void;
   onSelectChatId: (chatId: string) => void;
   onSetToolCall?: (set: CreateSetDefinitionSchema) => void;
