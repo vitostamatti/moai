@@ -1,0 +1,19 @@
+services:
+  postgres:
+    container_name: moai-postgres-db
+    image: postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-moai-dev}
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+
+    restart: unless-stopped
+
+volumes:
+  postgres:
+  pgadmin:
