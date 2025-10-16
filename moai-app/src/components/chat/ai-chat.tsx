@@ -50,24 +50,22 @@ import {
   lastAssistantMessageIsCompleteWithToolCalls,
 } from "ai";
 import { generateUUID } from "@/lib/ai/utils";
+import {
+  Tool,
+  ToolContent,
+  ToolHeader,
+  ToolInput,
+  ToolOutput,
+} from "../ai-elements/tool";
+import { createSet } from "@/db/mutations";
 
-const models = [
-  {
-    name: "GPT 4o",
-    value: "openai/gpt-4o",
-  },
-  {
-    name: "Deepseek R1",
-    value: "deepseek/deepseek-r1",
-  },
-];
 type Props = {
+  modelId: string;
   chatId: string;
   initialMessages: ChatMessage[];
 };
 export const AIChat = (props: Props) => {
   const [input, setInput] = useState("");
-  const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
 
   const { messages, sendMessage, status } = useChat<ChatMessage>({
@@ -77,7 +75,13 @@ export const AIChat = (props: Props) => {
     transport: new DefaultChatTransport({
       api: "/api/chat",
       prepareSendMessagesRequest({ messages, id }) {
-        return { body: { message: messages[messages.length - 1], id } };
+        return {
+          body: {
+            message: messages[messages.length - 1],
+            id,
+            modelId: props.modelId,
+          },
+        };
       },
     }),
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
@@ -98,7 +102,6 @@ export const AIChat = (props: Props) => {
       },
       {
         body: {
-          model: model,
           webSearch: webSearch,
         },
       }
@@ -107,7 +110,7 @@ export const AIChat = (props: Props) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 relative size-full h-screen">
+    <div className="max-w-4xl mx-auto p-6 relative size-full h-full">
       <div className="flex flex-col h-full">
         <Conversation className="h-full">
           <ConversationContent>
@@ -183,6 +186,35 @@ export const AIChat = (props: Props) => {
                           <ReasoningContent>{part.text}</ReasoningContent>
                         </Reasoning>
                       );
+                    case "tool-createSet":
+                    case "tool-updateSet":
+                    case "tool-deleteSet":
+                    case "tool-updateVariable":
+                    case "tool-deleteVariable":
+                    case "tool-createVariable":
+                    case "tool-createParameter":
+                    case "tool-updateParameter":
+                    case "tool-deleteParameter":
+                    case "tool-createConstraint":
+                    case "tool-updateConstraint":
+                    case "tool-deleteConstraint":
+                    case "tool-createObjective":
+                    case "tool-updateObjective":
+                    case "tool-deleteObjective":
+                      return (
+                        <Tool key={`${message.id}-${i}`}>
+                          <ToolHeader type={part.type} state={part.state} />
+                          <ToolContent>
+                            <ToolInput input={part.input} />
+                            {part.state === "output-available" && (
+                              <ToolOutput
+                                errorText={part.errorText}
+                                output={part.output}
+                              />
+                            )}
+                          </ToolContent>
+                        </Tool>
+                      );
                     default:
                       return null;
                   }
@@ -224,26 +256,6 @@ export const AIChat = (props: Props) => {
                 <GlobeIcon size={16} />
                 <span>Search</span>
               </PromptInputButton>
-              <PromptInputModelSelect
-                onValueChange={(value) => {
-                  setModel(value);
-                }}
-                value={model}
-              >
-                <PromptInputModelSelectTrigger>
-                  <PromptInputModelSelectValue />
-                </PromptInputModelSelectTrigger>
-                <PromptInputModelSelectContent>
-                  {models.map((model) => (
-                    <PromptInputModelSelectItem
-                      key={model.value}
-                      value={model.value}
-                    >
-                      {model.name}
-                    </PromptInputModelSelectItem>
-                  ))}
-                </PromptInputModelSelectContent>
-              </PromptInputModelSelect>
             </PromptInputTools>
             <PromptInputSubmit disabled={!input && !status} status={status} />
           </PromptInputToolbar>

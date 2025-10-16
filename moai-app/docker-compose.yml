@@ -1,9 +1,9 @@
 services:
   postgres:
-    container_name: moai-postgres-db
+    container_name: moai-app-postgres-db
     image: postgres
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-moai-dev}
+      POSTGRES_DB: ${POSTGRES_DB:-moai-app}
       POSTGRES_USER: ${POSTGRES_USER:-admin}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
       PGDATA: /data/postgres

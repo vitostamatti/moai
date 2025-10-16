@@ -129,7 +129,7 @@ export const ModelsListItem = ({ model }: { model: ModelSummary }) => {
           <div className="flex items-start justify-between">
             <div className="min-w-0">
               <Link
-                href={`/models/v1/${model.id}`}
+                href={`/models/${model.id}`}
                 className="h-full cursor-pointer hover:underline"
               >
                 <CardTitle className="text-lg truncate">{model.name}</CardTitle>

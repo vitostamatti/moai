@@ -18,43 +18,21 @@ import {
 } from "./tools";
 
 export type ChatTools = {
-  createSetDefinition: InferUITool<ReturnType<typeof createSetTool>>;
-  updateSetDefinition: InferUITool<ReturnType<typeof updateSetTool>>;
-  deleteSetDefinition: InferUITool<ReturnType<typeof deleteSetTool>>;
-  //
-  updateVariableDefinition: InferUITool<ReturnType<typeof updateVariableTool>>;
-  deleteVariableDefinition: InferUITool<ReturnType<typeof deleteVariableTool>>;
-  createVariableDefinition: InferUITool<ReturnType<typeof createVariableTool>>;
-  //
-  createParameterDefinition: InferUITool<
-    ReturnType<typeof createParameterTool>
-  >;
-  updateParameterDefinition: InferUITool<
-    ReturnType<typeof updateParameterTool>
-  >;
-  deleteParameterDefinition: InferUITool<
-    ReturnType<typeof deleteParameterTool>
-  >;
-  //
-  createConstraintDefinition: InferUITool<
-    ReturnType<typeof createConstraintTool>
-  >;
-  updateConstraintDefinition: InferUITool<
-    ReturnType<typeof updateConstraintTool>
-  >;
-  deleteConstraintDefinition: InferUITool<
-    ReturnType<typeof deleteConstraintTool>
-  >;
-  //
-  createObjectiveDefinition: InferUITool<
-    ReturnType<typeof createObjectiveTool>
-  >;
-  updateObjectiveDefinition: InferUITool<
-    ReturnType<typeof updateObjectiveTool>
-  >;
-  deleteObjectiveDefinition: InferUITool<
-    ReturnType<typeof deleteObjectiveTool>
-  >;
+  createSet: InferUITool<ReturnType<typeof createSetTool>>;
+  updateSet: InferUITool<ReturnType<typeof updateSetTool>>;
+  deleteSet: InferUITool<ReturnType<typeof deleteSetTool>>;
+  updateVariable: InferUITool<ReturnType<typeof updateVariableTool>>;
+  deleteVariable: InferUITool<ReturnType<typeof deleteVariableTool>>;
+  createVariable: InferUITool<ReturnType<typeof createVariableTool>>;
+  createParameter: InferUITool<ReturnType<typeof createParameterTool>>;
+  updateParameter: InferUITool<ReturnType<typeof updateParameterTool>>;
+  deleteParameter: InferUITool<ReturnType<typeof deleteParameterTool>>;
+  createConstraint: InferUITool<ReturnType<typeof createConstraintTool>>;
+  updateConstraint: InferUITool<ReturnType<typeof updateConstraintTool>>;
+  deleteConstraint: InferUITool<ReturnType<typeof deleteConstraintTool>>;
+  createObjective: InferUITool<ReturnType<typeof createObjectiveTool>>;
+  updateObjective: InferUITool<ReturnType<typeof updateObjectiveTool>>;
+  deleteObjective: InferUITool<ReturnType<typeof deleteObjectiveTool>>;
 };
 
 export type MessageMetadata = { createdAt: string };

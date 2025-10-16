@@ -10,7 +10,11 @@
     "format": "biome format --write",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "db:generate": "npx drizzle-kit generate",
+    "db:migrate": "npx drizzle-kit migrate",
+    "db:seed": "tsx src/db/seed/index.ts",
+    "db:studio": "npx drizzle-kit studio"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.49",

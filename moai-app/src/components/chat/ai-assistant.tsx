@@ -82,5 +82,11 @@ export const AIAssistant = ({ modelId }: Props) => {
   if (isLoading) {
     return <div>Loading chat...</div>;
   }
-  return <AIChat chatId={chatId} initialMessages={displayMessages} />;
+  return (
+    <AIChat
+      chatId={chatId}
+      modelId={modelId}
+      initialMessages={displayMessages}
+    />
+  );
 };

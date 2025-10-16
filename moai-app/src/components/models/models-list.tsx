@@ -16,7 +16,7 @@ export function ModelsList() {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <button
-          // onClick={() => openDialog()}
+          onClick={() => openDialog()}
           className="group h-full rounded-lg border-dashed border-2 border-muted-foreground/30 hover:border-primary transition-colors p-6 text-left flex items-center justify-center"
         >
           <div className="flex items-center gap-2 text-muted-foreground group-hover:text-primary">
