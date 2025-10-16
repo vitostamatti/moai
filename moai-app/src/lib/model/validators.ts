@@ -78,6 +78,11 @@ export function validateSet(model: Model, set: Set): ModelValidationError[] {
   if (!validateIdentifier(set.name)) {
     errors.push({ field: "name", message: "Invalid set name" });
   }
+  // check if name is unique within model
+  const setNames = model.sets?.map((s) => s.name);
+  if (setNames?.includes(set.name)) {
+    errors.push({ field: "name", message: "Set name must be unique" });
+  }
   // check if elements are unique
   if (set.elements.length !== new Set(set.elements.map(String)).size) {
     errors.push({ field: "elements", message: "Set elements must be unique" });

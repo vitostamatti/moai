@@ -3,7 +3,7 @@ import { db } from "./client";
 // Model queries
 export async function getModelWithComponents(modelId: string) {
   return await db.query.model.findFirst({
-    where: (models, { eq }) => eq(models.id, modelId),
+    where: (model, { eq }) => eq(model.id, modelId),
     with: {
       user: true,
       sets: true,

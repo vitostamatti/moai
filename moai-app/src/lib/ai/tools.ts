@@ -27,6 +27,7 @@ import {
 } from "@/db";
 import { generateUUID } from "./utils";
 import { Constraint, Objective } from "../model/types";
+import { validateSet } from "../model/validators";
 
 const createSetSchema = z.object({
   name: z
@@ -35,6 +36,21 @@ const createSetSchema = z.object({
   description: z.string().optional(),
   data: setSchema,
 });
+
+const modelWithComponentsToModel = (
+  model: NonNullable<Awaited<ReturnType<typeof getModelWithComponents>>>
+) => {
+  return {
+    sets: model.sets.map((s) => s.data),
+    parameters: model.parameters.map((p) => p.data),
+    variables: model.variables.map((v) => v.data),
+    constraints: model.constraints.map((c) => c.data),
+    objective:
+      model.objectives.length > 0
+        ? (model.objectives[0].data as Objective)
+        : undefined,
+  };
+};
 
 export const createSetTool = (modelId: string) =>
   tool({
@@ -55,17 +71,30 @@ export const createSetTool = (modelId: string) =>
         // if exists, return error
         throw new Error(`Set '${inputs.data.name}' already exists`);
       }
-      await createSet({
-        id: generateUUID(),
-        modelId: model.id,
-        name: inputs.name,
-        description: inputs.description || null,
-        data: inputs.data,
-      });
-      // if not, add set to model storage
+      // validation
 
-      // return success message
-
+      const errors = validateSet(
+        modelWithComponentsToModel(model),
+        inputs.data
+      );
+      if (errors.length > 0) {
+        throw new Error(
+          `Set validation failed: ${errors
+            .map((e) => `${e.field} - ${e.message}`)
+            .join(", ")}`
+        );
+      }
+      try {
+        await createSet({
+          id: generateUUID(),
+          modelId: model.id,
+          name: inputs.name,
+          description: inputs.description || null,
+          data: inputs.data,
+        });
+      } catch (error) {
+        throw new Error(`Failed to store set information. Try again.`);
+      }
       return {
         status: "success",
         message: `Set definition '${inputs.name}' created successfully.`,
