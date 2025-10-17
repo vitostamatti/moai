@@ -17,11 +17,6 @@ import {
   PromptInputBody,
   PromptInputButton,
   type PromptInputMessage,
-  PromptInputModelSelect,
-  PromptInputModelSelectContent,
-  PromptInputModelSelectItem,
-  PromptInputModelSelectTrigger,
-  PromptInputModelSelectValue,
   PromptInputSubmit,
   PromptInputTextarea,
   PromptInputToolbar,
@@ -31,7 +26,7 @@ import { Action, Actions } from "@/components/ai-elements/actions";
 import { Fragment, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { Response } from "@/components/ai-elements/response";
-import { CopyIcon, GlobeIcon, RefreshCcwIcon } from "lucide-react";
+import { CopyIcon, GlobeIcon } from "lucide-react";
 import {
   Source,
   Sources,
@@ -57,7 +52,8 @@ import {
   ToolInput,
   ToolOutput,
 } from "../ai-elements/tool";
-import { createSet } from "@/db/mutations";
+import { useTRPC } from "@/trpc/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   modelId: string;
@@ -65,6 +61,8 @@ type Props = {
   initialMessages: ChatMessage[];
 };
 export const AIChat = (props: Props) => {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const [input, setInput] = useState("");
   const [webSearch, setWebSearch] = useState(false);
 
@@ -85,6 +83,11 @@ export const AIChat = (props: Props) => {
       },
     }),
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+    onFinish: () => {
+      queryClient.invalidateQueries({
+        queryKey: trpc.models.detail.queryKey({ id: props.modelId }),
+      });
+    },
   });
 
   const handleSubmit = (message: PromptInputMessage) => {

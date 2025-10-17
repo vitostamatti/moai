@@ -1,6 +1,7 @@
 import { UIMessagePart } from "ai";
 import { ChatMessage, ChatTools, CustomUIDataTypes } from "./types";
 import * as s from "@/db/schema";
+import { getModelWithComponents } from "@/db/queries";
 
 export function convertToUIMessages(
   messages: s.MessageSelect[]
@@ -19,3 +20,16 @@ export function generateUUID(): string {
     return v.toString(16);
   });
 }
+
+export const modelWithComponentsToModel = (
+  model: NonNullable<Awaited<ReturnType<typeof getModelWithComponents>>>
+) => {
+  return {
+    sets: model.sets.map((s) => s.data),
+    parameters: model.parameters.map((p) => p.data),
+    variables: model.variables.map((v) => v.data),
+    constraints: model.constraints.map((c) => c.data),
+    objective:
+      model.objectives.length > 0 ? model.objectives[0].data : undefined,
+  };
+};

@@ -1,5 +1,6 @@
 import { getSession } from "@/auth/server";
 import { AIAssistant } from "@/components/chat/ai-assistant";
+import { ModelPreview } from "@/components/editor/model-preview";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -38,7 +39,9 @@ const Page = async ({ params }: Props) => {
           <AIAssistant modelId={modelId} />
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={60}>model preview</ResizablePanel>
+        <ResizablePanel defaultSize={60}>
+          <ModelPreview modelId={modelId} />
+        </ResizablePanel>
       </ResizablePanelGroup>
     </HydrateClient>
   );

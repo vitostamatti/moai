@@ -25,7 +25,7 @@ import {
   updateSet,
   updateVariable,
 } from "@/db";
-import { generateUUID } from "./utils";
+import { generateUUID, modelWithComponentsToModel } from "./utils";
 import { Constraint, Objective } from "../model/types";
 import { validateSet } from "../model/validators";
 
@@ -36,21 +36,6 @@ const createSetSchema = z.object({
   description: z.string().optional(),
   data: setSchema,
 });
-
-const modelWithComponentsToModel = (
-  model: NonNullable<Awaited<ReturnType<typeof getModelWithComponents>>>
-) => {
-  return {
-    sets: model.sets.map((s) => s.data),
-    parameters: model.parameters.map((p) => p.data),
-    variables: model.variables.map((v) => v.data),
-    constraints: model.constraints.map((c) => c.data),
-    objective:
-      model.objectives.length > 0
-        ? (model.objectives[0].data as Objective)
-        : undefined,
-  };
-};
 
 export const createSetTool = (modelId: string) =>
   tool({
